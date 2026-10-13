@@ -5,6 +5,16 @@ import base64
 from profile_selection_page import profile_selection
 from HOME_PAGE.home_page import home_page
 
+# connecting postgres
+conn = st.connection("neon", type="sql")
+
+# Perform query.
+df = conn.query('SELECT * FROM home;', ttl="10m")
+
+# Print results.
+for row in df.itertuples():
+    st.write(f"{row.name} has a :{row.pet}:")
+
 # Page Configuration
 st.set_page_config(
     page_title="Kartik | Portfolio",

@@ -1,11 +1,11 @@
 import streamlit as st
 
 from HOME_PAGE.components.cards import experience_card
-from HOME_PAGE.data.portfolio_repository import get_experiances
+from HOME_PAGE.data.portfolio_repository import get_experiences
 
 
 def experience_section():
-    experiences = get_experiances()
+    experiences = get_experiences()
 
     cards_html = ""
 

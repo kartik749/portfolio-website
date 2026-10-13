@@ -1,16 +1,62 @@
-from HOME_PAGE.data.portfolio_data import (SKILLS, PROJECTS, EDUCATION, EXPERIENCES, ACHIEVEMENTS, CERTIFICATIONS,CODING_PROFILES)
 
-def get_skills():
-    return SKILLS.copy()
-def get_projects():
-    return PROJECTS.copy()
-def get_education():
-    return EDUCATION.copy()
-def get_experiances():
-    return EXPERIENCES.copy()
-def get_achivements():
-    return ACHIEVEMENTS.copy()
-def get_certifications():
-    return CERTIFICATIONS.copy()
-def get_coding_profiles():
-    return CODING_PROFILES.copy()
+import streamlit as st
+from sqlalchemy import text
+
+
+conn = st.connection("neon", type="sql")
+
+
+def _get_rows(query: str) -> list[dict]:
+    """Fetch rows from PostgreSQL as dictionaries."""
+    with conn.session as session:
+        result = session.execute(text(query))
+        return [dict(row) for row in result.mappings().all()]
+
+
+def get_skills() -> list[str]:
+    rows = _get_rows(
+        "SELECT name FROM skills ORDER BY sort_order, id"
+    )
+    return [row["name"] for row in rows]
+
+
+def get_projects() -> list[dict]:
+    return _get_rows(
+        "SELECT number, name, description, technologies "
+        "FROM projects ORDER BY sort_order, id"
+    )
+
+
+def get_experiences() -> list[dict]:
+    return _get_rows(
+        "SELECT company, role, duration, description "
+        "FROM experiences ORDER BY sort_order, id"
+    )
+
+
+def get_education() -> list[dict]:
+    return _get_rows(
+        "SELECT institute, degree, duration, details "
+        "FROM education ORDER BY sort_order, id"
+    )
+
+
+def get_achievements() -> list[dict]:
+    return _get_rows(
+        "SELECT category, title, description "
+        "FROM achievements ORDER BY sort_order, id"
+    )
+
+
+def get_certifications() -> list[dict]:
+    return _get_rows(
+        "SELECT provider, name "
+        "FROM certifications ORDER BY sort_order, id"
+    )
+
+
+def get_coding_profiles() -> list[dict]:
+    return _get_rows(
+        "SELECT platform, description, url "
+        "FROM coding_profiles ORDER BY sort_order, id"
+    )

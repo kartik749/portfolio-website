@@ -2,12 +2,12 @@
 import streamlit as st
 
 from HOME_PAGE.components.cards import achievement_card
-from HOME_PAGE.data.portfolio_repository import get_achivements
+from HOME_PAGE.data.portfolio_repository import get_achievements
 
 
 def achievements_section():
 
-    achievements = get_achivements()
+    achievements = get_achievements()
 
     cards_html = ""
 
