@@ -5,6 +5,7 @@ import base64
 from profile_selection_page import profile_selection
 from HOME_PAGE.home_page import home_page
 from admin_login_page import admin_login_page
+from admin_dashboard import admin_dashboard
 
 # connecting postgres
 conn = st.connection("neon", type="sql")
@@ -65,7 +66,7 @@ else:
 
     if st.session_state["show_admin_login"]:
         if admin_login_page():
-            st.info("Authentication successful. Admin dashboard is our next step.")
+            admin_dashboard()
     else:
         profile_selection()
         pass
