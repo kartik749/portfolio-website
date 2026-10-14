@@ -2,6 +2,11 @@ import streamlit as st
 from sqlalchemy import text
 from HOME_PAGE.admin.projects_admin import projects_admin
 from HOME_PAGE.admin.skills_admin import skills_admin
+from HOME_PAGE.admin.experience_admin import experience_admin
+from HOME_PAGE.admin.education_admin import education_admin
+from HOME_PAGE.admin.achievements_admin import achievements_admin
+from HOME_PAGE.admin.certifications_admin import certifications_admin
+from HOME_PAGE.admin.coding_profiles_admin import coding_profiles_admin
 
 def admin_dashboard():
     # Protect the dashboard from unauthenticated access
@@ -24,7 +29,7 @@ def admin_dashboard():
                 "Overview",
                 "Skills",
                 "Projects",
-                "Experiances",
+                "Experiences",
                 "Education",
                 "Achievements",
                 "Certifications",
@@ -38,26 +43,21 @@ def admin_dashboard():
         st.session_state.pop("admin_navigation",None)
         st.rerun()
     if section == "Overview":
-          show_overview()
+        show_overview()
     if section == 'Skills':
         skills_admin()
     if section == 'Projects':
         projects_admin()
-    if section == 'Experiance':
-            st.subheader("Manage Experiance")
-            st.info("Experiance CRUD will be added later")
+    if section == "Experiences":
+        experience_admin()
     if section == 'Education':
-            st.subheader("Manage Education")
-            st.info("Education CRUD will be added later")
+        education_admin()
     if section == 'Achievements':
-        st.subheader("Manage Achievements")
-        st.info("Achievements CRUD will be added later")
+        achievements_admin()
     if section == 'Certifications':
-        st.subheader("Manage Certifications")
-        st.info("Certifications CRUD will be added later")
+        certifications_admin()
     if section == 'Coding_Profiles':
-        st.subheader("Manage Coding_Profiles")
-        st.info("Coding_Profiles CRUD will be added later")
+        coding_profiles_admin()
     
 def show_overview():
     st.subheader("Portfolio Overview")
