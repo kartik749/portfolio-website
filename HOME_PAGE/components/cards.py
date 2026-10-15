@@ -1,7 +1,10 @@
 import streamlit as st
+import html
+from pathlib import Path
 
 
 def skill_card(skill):
+    safe_name = html.escape(str(skill or ""))
 
     return f"""
     <style>
@@ -47,34 +50,77 @@ def skill_card(skill):
     </style>
 
     <div class="skill-card">
-        {skill}
+        {safe_name}
     </div>
     """
+
 
 def project_card(
     number,
     name,
     description,
-    technologies
+    technologies,
+    image_path=None
 ):
+    safe_name = html.escape(str(name or ""))
+    safe_number = html.escape(str(number or ""))
+    safe_description = html.escape(str(description or ""))
+    safe_technologies = html.escape(str(technologies or ""))
+
+    # Convert the local image into an embedded image URL.
+    image_html = ""
+
+    if image_path:
+        try:
+            image_file = Path(image_path).resolve()
+
+            # Allow common image formats only.
+            mime_types = {
+                ".png": "image/png",
+                ".jpg": "image/jpeg",
+                ".jpeg": "image/jpeg",
+                ".webp": "image/webp",
+            }
+
+            mime_type = mime_types.get(image_file.suffix.lower())
+
+            if mime_type and image_file.is_file():
+                image_bytes = image_file.read_bytes()
+                encoded_image = base64.b64encode(
+                    image_bytes
+                ).decode("ascii")
+
+                image_html = f"""
+                    <img
+                        class="project-image"
+                        src="data:{mime_type};base64,{encoded_image}"
+                        alt="{safe_name}"
+                    />
+                """
+        except (OSError, ValueError):
+            image_html = ""
 
     return f"""
     <div class="project-card">
 
-        <div class="project-number">
-            PROJECT {number}
-        </div>
+        {image_html}
 
-        <div class="project-name">
-            {name}
-        </div>
+        <div class="project-content">
+            <div class="project-number">
+                PROJECT {safe_number}
+            </div>
 
-        <div class="project-description">
-            {description}
-        </div>
+            <div class="project-name">
+                {safe_name}
+            </div>
 
-        <div class="project-tech">
-            {technologies}
+            <div class="project-description">
+                {safe_description}
+            </div>
+
+            <div class="project-tech">
+                {safe_technologies}
+            </div>
         </div>
 
     </div>
@@ -86,24 +132,27 @@ def experience_card(
     duration,
     description
 ):
-
+    safe_company = html.escape(company or "")
+    safe_role = html.escape(role or "")
+    safe_duration = html.escape(duration or "")
+    safe_description = html.escape(description or "")
     return f"""
     <div class="experience-card">
 
         <div class="experience-company">
-            {company}
+            {safe_company}
         </div>
 
         <div class="experience-role">
-            {role}
+            {safe_role}
         </div>
 
         <div class="experience-duration">
-            {duration}
+            {safe_duration}
         </div>
 
         <div class="experience-description">
-            {description}
+            {safe_description}
         </div>
 
     </div>
@@ -116,24 +165,28 @@ def education_card(
     duration,
     details
 ):
+    safe_institute = html.escape(institute or "")
+    safe_degree = html.escape(degree or "")
+    safe_duration = html.escape(duration or "")
+    safe_details = html.escape(details or "")
 
     return f"""
     <div class="education-card">
 
         <div class="education-institute">
-            {institute}
+            {safe_institute}
         </div>
 
         <div class="education-degree">
-            {degree}
+            {safe_degree}
         </div>
 
         <div class="education-duration">
-            {duration}
+            {safe_duration}
         </div>
 
         <div class="education-details">
-            {details}
+            {safe_details}
         </div>
 
     </div>
@@ -141,20 +194,23 @@ def education_card(
 
 
 def achievement_card(category, title, description):
+    safe_category = html.escape(category or "")
+    safe_title = html.escape(title or "")
+    safe_description = html.escape(description or "")
 
     return f"""
     <div class="achievement-card">
 
         <div class="achievement-label">
-            {category}
+            {safe_category}
         </div>
 
         <div class="achievement-title">
-            {title}
+            {safe_title}
         </div>
 
         <div class="achievement-description">
-            {description}
+            {safe_description}
         </div>
 
     </div>
@@ -163,15 +219,17 @@ def achievement_card(category, title, description):
 
 def certification_card(provider, name):
 
+    safe_provider = html.escape(provider or "")
+    safe_name = html.escape(name or "")
     return f"""
     <div class="certificate-card">
 
         <div class="certificate-provider">
-            {provider}
+            {safe_provider}
         </div>
 
         <div class="certificate-name">
-            {name}
+            {safe_name}
         </div>
 
     </div>
@@ -180,18 +238,21 @@ def certification_card(provider, name):
 
 def coding_profile_card(platform, description, url):
 
+    safe_platform = html.escape(platform or "")
+    safe_description = html.escape(description or "")
+    safe_url = html.escape(url or "")
     return f"""
     <a class="coding-card"
-       href="{url}"
+       href="{safe_url}"
        target="_blank"
        rel="noopener noreferrer">
 
         <div class="coding-platform">
-            {platform}
+            {safe_platform}
         </div>
 
         <div class="coding-description">
-            {description}
+            {safe_description}
         </div>
 
         <div class="coding-open">

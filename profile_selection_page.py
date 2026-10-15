@@ -5,7 +5,7 @@ def profile_selection():
 
     # Load profile image
 
-    image_path = Path("assets/kartik photo 1.jpg")
+    image_path = Path("assets/kartik photo 1.jpeg")
 
     if image_path.exists():
 

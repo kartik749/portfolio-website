@@ -20,11 +20,13 @@ def get_skills() -> list[str]:
     return [row["name"] for row in rows]
 
 
-def get_projects() -> list[dict]:
-    return _get_rows(
-        "SELECT number, name, description, technologies "
-        "FROM projects ORDER BY sort_order, id"
-    )
+def get_projects():
+    return _get_rows("""
+        SELECT id, sort_order, number, name,
+               description, technologies, image_path
+        FROM projects
+        ORDER BY sort_order, id
+    """)
 
 
 def get_experiences() -> list[dict]:
