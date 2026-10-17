@@ -1,7 +1,6 @@
 import streamlit as st
-from pathlib import Path
-import base64
 
+from theme import inject_global_css, top_right_button
 from profile_selection_page import profile_selection
 from HOME_PAGE.home_page import home_page
 from admin_login_page import admin_login_page
@@ -16,57 +15,33 @@ st.set_page_config(
     page_title="Kartik | Portfolio",
     page_icon="👤",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
 )
 
 # SESSION STATE
+# One value decides which screen is shown: "profile", "home" or "admin".
+st.session_state.setdefault("view", "profile")
 
-if "entered" not in st.session_state:
-    st.session_state.entered = False
+# GLOBAL CSS (design tokens, hidden sidebar, top-right button)
+inject_global_css()
 
-# GLOBAL CSS
 
-st.html("""
-<style>
+def admin_view():
+    """Admin login, then the dashboard once signed in."""
+    # Leave room for the fixed top-right button.
+    st.html("<style>.block-container { padding-top: 4.5rem; }</style>")
+    top_right_button("← Back to portfolio", "profile", key="admin_back")
 
-[data-testid="stAppViewContainer"] {
-    background:
-        radial-gradient(
-            circle at center,
-            #1a1a22 0%,
-            #0b0b0f 65%
-        );
-}
+    if admin_login_page():
+        admin_dashboard()
 
-.block-container {
-    padding-top: 0rem;
-}
 
-</style>
-""")
 # MAIN APPLICATION
+view = st.session_state.view
 
-if st.session_state.entered:
-
+if view == "home":
     home_page()
-
+elif view == "admin":
+    admin_view()
 else:
-    if "show_admin_login" not in st.session_state:
-        st.session_state["show_admin_login"] = False
-
-    with st.sidebar:
-        if st.button("Admin Login"):
-            st.session_state["show_admin_login"] = True
-            st.rerun()
-
-        if st.session_state.get("show_admin_login", False):
-            if st.button("Back to Portfolio"):
-                st.session_state["show_admin_login"] = False
-                st.rerun()
-
-    if st.session_state["show_admin_login"]:
-        if admin_login_page():
-            admin_dashboard()
-    else:
-        profile_selection()
-        pass
+    profile_selection()

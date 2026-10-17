@@ -10,54 +10,47 @@ from HOME_PAGE.admin.coding_profiles_admin import coding_profiles_admin
 
 def admin_dashboard():
     # Protect the dashboard from unauthenticated access
-    if not st.session_state.get("admin_authenticated",False):
+    if not st.session_state.get("admin_authenticated", False):
         st.warning("Please Login to access the admin dashboard.")
-        return 
-    st.write("")
-    st.write("")
-    st.title("Portfolio Admin Dashboard")
-    st.caption("Manage the content displayed on your public Portfolio.")
+        return
 
-    # Side Bar Navigation
-    with st.sidebar:
-        st.divider()
-        st.subheader("Admin Panel")
+    sections = {
+        "Overview": show_overview,
+        "Skills": skills_admin,
+        "Projects": projects_admin,
+        "Experiences": experience_admin,
+        "Education": education_admin,
+        "Achievements": achievements_admin,
+        "Certifications": certifications_admin,
+        "Coding Profiles": coding_profiles_admin,
+    }
 
-        section = st.radio(
-            "Manage Section",
-            [
-                "Overview",
-                "Skills",
-                "Projects",
-                "Experiences",
-                "Education",
-                "Achievements",
-                "Certifications",
-                "Coding_Profiles"
-            ],
-            key="admin_navigation"
-        )
-    if st.button("Logout", use_container_width=True):
-        st.session_state['admin_authenticated'] = False
-        st.session_state['show_admin_login'] = False
-        st.session_state.pop("admin_navigation",None)
-        st.rerun()
-    if section == "Overview":
-        show_overview()
-    if section == 'Skills':
-        skills_admin()
-    if section == 'Projects':
-        projects_admin()
-    if section == "Experiences":
-        experience_admin()
-    if section == 'Education':
-        education_admin()
-    if section == 'Achievements':
-        achievements_admin()
-    if section == 'Certifications':
-        certifications_admin()
-    if section == 'Coding_Profiles':
-        coding_profiles_admin()
+    # Header: title on the left, Logout on the right
+    title_col, logout_col = st.columns([6, 1], vertical_alignment="center")
+
+    with title_col:
+        st.title("Portfolio Admin Dashboard")
+        st.caption("Manage the content displayed on your public Portfolio.")
+
+    with logout_col:
+        if st.button("Logout", width="stretch"):
+            st.session_state["admin_authenticated"] = False
+            st.session_state["view"] = "profile"
+            st.session_state.pop("admin_navigation", None)
+            st.rerun()
+
+    # Section navigation: a horizontal bar instead of the old sidebar
+    selected = st.pills(
+        "Manage section",
+        list(sections),
+        default="Overview",
+        key="admin_navigation",
+        label_visibility="collapsed",
+    )
+
+    # Clicking the active pill again deselects it; fall back to Overview.
+    sections[selected or "Overview"]()
+
     
 def show_overview():
     st.subheader("Portfolio Overview")

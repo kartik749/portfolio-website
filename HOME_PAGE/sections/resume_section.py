@@ -5,12 +5,12 @@ import streamlit as st
 
 def resume_section():
     project_root = Path(__file__).resolve().parents[2]
-    resume_path = project_root / "assets" / "resume.pdf"
+    resume_path = project_root / "assets" / "Resume.pdf"
 
     st.html("""
         <style>
         .resume-eyebrow {
-            color: #60a5fa;
+            color: var(--accent, #e50914);
             font-size: 13px;
             font-weight: 700;
             letter-spacing: 2px;

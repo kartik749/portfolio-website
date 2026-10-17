@@ -179,7 +179,7 @@ def projects_section():
 
         .project-card:hover {{
             transform: translateY(-5px);
-            border-color: rgba(96, 165, 250, 0.65);
+            border-color: rgba(229, 9, 20, 0.6);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
         }}
 
@@ -201,7 +201,7 @@ def projects_section():
         .project-number {{
             font-size: 12px;
             font-weight: 600;
-            color: #60a5fa;
+            color: var(--accent, #e50914);
             margin-bottom: 6px;
             letter-spacing: 1px;
         }}

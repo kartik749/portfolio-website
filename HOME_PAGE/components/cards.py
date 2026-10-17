@@ -2,55 +2,29 @@ import streamlit as st
 import html
 from pathlib import Path
 
+from .skill_icons import skill_icon_url, skill_icon_needs_invert
+
 
 def skill_card(skill):
-    safe_name = html.escape(str(skill or ""))
+    """One tile of the skills grid. Styling lives in skills_section.py."""
+    name = str(skill or "")
+    safe_name = html.escape(name)
+    icon_url = skill_icon_url(name)
+
+    if icon_url:
+        invert = " skill-icon-invert" if skill_icon_needs_invert(name) else ""
+        icon_html = (
+            f'<img class="skill-icon{invert}" src="{icon_url}" alt="" '
+            'width="44" height="44" loading="lazy" decoding="async">'
+        )
+    else:
+        letter = html.escape(name.strip()[:1].upper() or "?")
+        icon_html = f'<div class="skill-mono">{letter}</div>'
 
     return f"""
-    <style>
-
-    .skill-card {{
-        min-width: 160px;
-        height: 90px;
-
-        border-radius: 8px;
-
-        background:
-            linear-gradient(
-                135deg,
-                #24242a,
-                #151519
-            );
-
-        border: 1px solid rgba(255,255,255,0.08);
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        color: #eeeeee;
-
-        font-size: 17px;
-        font-weight: 600;
-
-        transition:
-            transform 0.25s ease,
-            border 0.25s ease,
-            background 0.25s ease;
-    }}
-
-    .skill-card:hover {{
-        transform: scale(1.08);
-
-        border: 1px solid rgba(255,255,255,0.35);
-
-        background: #2d2d34;
-    }}
-
-    </style>
-
-    <div class="skill-card">
-        {safe_name}
+    <div class="skill-tile">
+        {icon_html}
+        <div class="skill-name">{safe_name}</div>
     </div>
     """
 
@@ -130,32 +104,48 @@ def experience_card(
     company,
     role,
     duration,
-    description
+    description,
+    is_open=False,
 ):
+    """One timeline entry. Collapsed it shows duration + company; clicking
+    it slides open the role and description. Styling lives in
+    experiance_section.py."""
     safe_company = html.escape(company or "")
     safe_role = html.escape(role or "")
     safe_duration = html.escape(duration or "")
-    safe_description = html.escape(description or "")
+
+    # A multi-line description in the admin panel renders as bullet points.
+    lines = [
+        html.escape(line.strip())
+        for line in (description or "").splitlines()
+        if line.strip()
+    ]
+
+    if len(lines) > 1:
+        points = "".join(f"<li>{line}</li>" for line in lines)
+        description_html = f'<ul class="exp-desc">{points}</ul>'
+    else:
+        text = lines[0] if lines else ""
+        description_html = f'<p class="exp-desc">{text}</p>'
+
+    open_attr = " open" if is_open else ""
+
     return f"""
-    <div class="experience-card">
+    <details class="exp-item" name="experience"{open_attr}>
 
-        <div class="experience-company">
-            {safe_company}
+        <summary class="exp-head">
+            <span class="exp-dot"></span>
+            <span class="exp-when">{safe_duration}</span>
+            <span class="exp-company">{safe_company}</span>
+            <span class="exp-chevron"></span>
+        </summary>
+
+        <div class="exp-body">
+            <div class="exp-role">{safe_role}</div>
+            {description_html}
         </div>
 
-        <div class="experience-role">
-            {safe_role}
-        </div>
-
-        <div class="experience-duration">
-            {safe_duration}
-        </div>
-
-        <div class="experience-description">
-            {safe_description}
-        </div>
-
-    </div>
+    </details>
     """
 
 

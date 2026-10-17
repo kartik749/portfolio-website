@@ -1,24 +1,24 @@
-
 import hmac
 import streamlit as st
 
 
 def admin_login_page():
-    st.write("")
-    st.write("")
-    
-    st.title("Admin Login")
-    st.write("Sign in to manage your Portfolio")
-
+    # Already signed in: show nothing here, the dashboard takes over.
     if st.session_state.get("admin_authenticated", False):
         return True
+
+    st.write("")
+    st.write("")
+
+    st.title("Admin Login")
+    st.write("Sign in to manage your Portfolio")
 
     with st.form("admin_login_form"):
         username = st.text_input("Username")
         password = st.text_input("Password", type="password")
         submitted = st.form_submit_button(
             "Login",
-            use_container_width=True,
+            width="stretch",
         )
 
     if submitted:

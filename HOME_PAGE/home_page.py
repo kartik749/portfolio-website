@@ -19,6 +19,15 @@ def home_page():
 
     /* GLOBAL HOME PAGE */
 
+    /* fades in after the profile card is clicked */
+    .block-container {
+        animation: home-enter 0.9s var(--ease, ease) backwards;
+    }
+
+    @keyframes home-enter {
+        from { opacity: 0; filter: blur(8px); }
+    }
+
     .home-container {
         width: 100%;
         margin: 0;
@@ -355,6 +364,6 @@ def home_page():
 
     if st.button("← Back to Profile"):
 
-        st.session_state.entered = False
+        st.session_state.view = "profile"
 
         st.rerun()
